@@ -792,13 +792,13 @@ $$p_i=\frac{e^{a_i}}{\sum_{k=1}^{N}e^{a_k}}$$
 
 \noindent\textbf{Softmax 求导：}
 \begin{align*}
-  &\frac{\partial p_i}{\partial j}=\frac{\partial\frac{e^{a_i}}{\sum_{k=1}^{N}}}{\partial e^{a_j}}\\
+  &\frac{\partial p_i}{\partial a_j}=\frac{\partial\frac{e^{a_i}}{\sum_{k=1}^{N}e^{a_k}}}{\partial a_j}\\
   &f(x) = \frac{g(x)}{h(x)},~~~~~~~~~f'(x)=\frac{g'(x)h(x)-h'(x)g(x)}{h^2(x)}\\
   &g(x)=e^{a_i},~~~~~~~~~h(x)=\sum_{k=1}^{N}e^{a_k}
 \end{align*}
 \begin{align*}
   &i==j&&i\neq j\\
-  \frac{\partial\frac{e^{a_i}}{\sum_{k=1}^{N}}}{\partial e^{a_j}}&=\frac{e^{a_i} \sum_{k=1}^{N} e^{a_k}-e^{a_j}e^{a_i}}{\big(\sum_{k=1}^{N}e^{a_k}\big)^2}&\frac{\partial\frac{e^{a_i}}{\sum_{k=1}^{N}}}{\partial e^{a_j}}&=\frac{0-e^{a_j}e^{a_i}}{\big(\sum_{k=1}^{N}e^{a_k}\big)^2}\\
+  \frac{\partial\frac{e^{a_i}}{\sum_{k=1}^{N}e^{a_k}}}{\partial a_j}&=\frac{e^{a_i} \sum_{k=1}^{N} e^{a_k}-e^{a_j}e^{a_i}}{\big(\sum_{k=1}^{N}e^{a_k}\big)^2}&\frac{\partial\frac{e^{a_i}}{\sum_{k=1}^{N}}}{\partial e^{a_j}}&=\frac{0-e^{a_j}e^{a_i}}{\big(\sum_{k=1}^{N}e^{a_k}\big)^2}\\
   &=\frac{e^{a_i}\big(\sum_{k=1}^{N}e^{a_k}-e^{a_j}\big)}{\big(\sum_{k=1}^{N}e^{a_k}\big)^2}&&=-\frac{e^{a_i}}{\sum_{k=1}^{N}e^{a_k}}\frac{e^{a^j}}{\sum_{k=1}^{N}e^{a_k}}\\
   &=p_i(1-p_j)&&=-p_ip_j
 \end{align*}
@@ -1651,7 +1651,7 @@ out.shape   # torch.Size([1, 16, 28, 28])
 out.min()   # tensor(-1.2756, grad_fn=<MinBackward1>)
 
 layer = nn.ReLU(inplace=True)
-out = layer(out)   
+out = layer(out)
 out.shape   # torch.Size([1, 16, 28, 28])
 out.min()   tensor(0., grad_fn=<MinBackward1>)
 \end{lstlisting}
@@ -1924,7 +1924,7 @@ class MyLinear(nn.Module):
 
     def forward(self, x):
         return self.net(x)
-        
+
 
 modules: net Sequential(
 (0): BasicNet(
@@ -1948,14 +1948,14 @@ modules: net.2 Linear(in_features=3, out_features=2, bias=True)
   net = Net()
   net.to(device)
   \end{lstlisting}
-  
+
   \item 保存与加载中间数据
   \begin{lstlisting}
-  net.load_state_dict(torch.load('ckpt.mdl')) 
+  net.load_state_dict(torch.load('ckpt.mdl'))
   ...train...
-  torch.save(net.state_dict(), 'ckpt.mdl') 
+  torch.save(net.state_dict(), 'ckpt.mdl')
   \end{lstlisting}
-  
+
   \item train\&test 状态切换方便。
   \begin{lstlisting}
   # train
@@ -1985,9 +1985,9 @@ class TestNet(nn.Module):
                                  nn.Linear(1*14*14, 10))
 
 def forward(self, x):
-        return self.net(x)  
+        return self.net(x)
     \end{lstlisting}
-    
+
     \item 自己实现的线性层
     \begin{lstlisting}
     class MyLinear(nn.Module):
@@ -2003,9 +2003,9 @@ def forward(self, x):
         x = x @ self.w.t() + self.b
         return x
     \end{lstlisting}
-    
+
 \end{enumerate}
-    
+
 
 
 \subsection{数据增强}
